@@ -117,8 +117,13 @@ export class AwsIamKubernetesAuthTranslator
       clusterDetails,
     );
 
+    // If awsClusterName is provided, use that as the cluster name, otherwise
+    // use the name field. This is to allow using unique cluster names in Backstage
+    // even though the cluster name in AWS is the same for multiple clusters.
+    const clusterName = clusterDetails.awsClusterName ?? clusterDetails.name;
+
     clusterDetailsWithAuthToken.serviceAccountToken = await this.getBearerToken(
-      clusterDetails.name,
+      clusterName,
       clusterDetails.assumeRole,
       clusterDetails.externalId,
     );
